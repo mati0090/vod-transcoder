@@ -1,5 +1,5 @@
 require "youtube2webm/version"
 
-module Youtube2webm
+module YoutubeToWebm
   # Your code goes here...
 end
