@@ -30,6 +30,8 @@ module YoutubeToWebm
           downloaded_file.close
         end
         request.run
+
+        downloaded_file
       end
 
       def url_from_movie
