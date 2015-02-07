@@ -11,7 +11,7 @@ module YoutubeToWebm
     end
 
     def perform!
-      raise ArgumentError('video_url, output_file_path, start_timespan, duration are required params!') if !video_url || !output_file_path || !start_timespan || !duration
+      raise ArgumentError.new('video_url, output_file_path, start_timespan, duration are required params!') if !video_url || !output_file_path || !start_timespan || !duration
 
       processor.transcode!(start_timespan, duration)
     end

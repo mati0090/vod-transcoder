@@ -26,12 +26,18 @@ describe YoutubeToWebm::Base do
     allow(downloader).to receive(:download!).and_return(file)
   end
 
-  it "should download and transcode video" do
+  it 'should download and transcode video' do
     base.perform!
 
     expect(YoutubeToWebm::Downloader).to have_received(:new).with(video_url)
     expect(YoutubeToWebm::Processor).to have_received(:new).with(temp_file_path, output_file_path)
 
     expect(processor).to have_received(:transcode!).with(start_timespan, duration)
+  end
+
+  it 'should throw error when some required params are missing' do
+    base.duration = nil
+
+    expect{base.perform!}.to raise_error(ArgumentError)
   end
 end
