@@ -48,7 +48,7 @@ module YoutubeToWebm
       end
 
       def temp_file_path
-        "temp/#{video_id}"
+        "tmp/#{video_id}"
       end
 
       def headers
