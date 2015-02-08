@@ -18,7 +18,7 @@ describe YoutubeToWebm::Processor do
   it "should call ffmpeg processor with proper arguments" do
     processor.transcode!(start_timespan, duration)
 
-    expect(ffmpeg_processor).to have_received(:transcode).with(output_file_path, {video_codec: 'vp8', custom: "-ss 00:00:15 -t 00:00:10.000 -an"})
+    expect(ffmpeg_processor).to have_received(:transcode).with(output_file_path, {video_codec: 'vp8', custom: /-ss 00:00:15 -t 00:00:10.000 -an/})
   end
 
 end
