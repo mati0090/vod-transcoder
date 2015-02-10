@@ -1,7 +1,7 @@
 module VodTranscoder
   class Base
 
-    attr_accessor :video_url, :output_file_path, :start_timespan, :duration
+    attr_accessor :video_url, :output_file_path, :start_timespan, :duration, :transcoders
 
     def initialize(args={})
       @video_url        = args[:video_url]
@@ -13,21 +13,23 @@ module VodTranscoder
     def perform!
       raise ArgumentError.new('video_url, output_file_path, start_timespan, duration are required params!') if !video_url || !output_file_path || !start_timespan || !duration
 
-      processor.transcode!(start_timespan, duration)
+      perform_transcoders
     end
 
     private
 
       def video_file_path
-        downloader.download!.path
+        @video_file_path ||= downloader.download!.path
       end
 
       def downloader
         @downloader ||= VodTranscoder::Downloader.new(video_url)
       end
 
-      def processor
-        @processor ||= VodTranscoder::Processor.new(video_file_path ,output_file_path)
+      def perform_transcoders
+        transcoders.each do |transcoder|
+          transcoder.new(video_file_path ,output_file_path).transcode!(start_timespan, duration)
+        end
       end
   end
 end
