@@ -12,11 +12,15 @@ class CustomTranscoder < VodTranscoder::Transcoders::Base
       'vp8'
     end
 
+    def output_file_extension
+      'webm'
+    end
+
 end
 
 describe VodTranscoder::Transcoders::Base do
   let(:file_path) {'file/path'}
-  let(:output_file_path) {'output/file/path'}
+  let(:output_file_path) {'output/movie'}
   let(:start_timespan) {'00:00:15'}
   let(:duration) {10}
 
@@ -32,11 +36,14 @@ describe VodTranscoder::Transcoders::Base do
   it "should call ffmpeg processor with proper arguments" do
     processor.transcode!(start_timespan, duration)
 
+    #respecting file path
+    expect(ffmpeg_processor).to have_received(:transcode).with('output/movie.webm' ,anything)
+
     #standard arguments
-    expect(ffmpeg_processor).to have_received(:transcode).with(output_file_path, {video_codec: 'vp8', custom: /-ss 00:00:15 -t 00:00:10.000 -an/})
+    expect(ffmpeg_processor).to have_received(:transcode).with(anything, {video_codec: 'vp8', custom: /-ss 00:00:15 -t 00:00:10.000 -an/})
 
     #custom arguments
-    expect(ffmpeg_processor).to have_received(:transcode).with(output_file_path, {video_codec: 'vp8', custom: /-quality good -cpu-used 0 -b:v 600k -qmin 10 -qmax 42 -maxrate 500k -bufsize 1000k/})
+    expect(ffmpeg_processor).to have_received(:transcode).with(anything, {video_codec: 'vp8', custom: /-quality good -cpu-used 0 -b:v 600k -qmin 10 -qmax 42 -maxrate 500k -bufsize 1000k/})
   end
 
 end

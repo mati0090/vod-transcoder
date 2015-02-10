@@ -11,6 +11,10 @@ module VodTranscoder
         def video_codec
           'vp8'
         end
+
+        def output_file_extension
+          'webm'
+        end
     end
   end
 end
