@@ -1,3 +1,3 @@
-module YoutubeToWebm
+module VodTranscoder
   class VideoNotFoundException < Exception; end;
 end

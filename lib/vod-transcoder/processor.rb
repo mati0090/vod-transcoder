@@ -1,6 +1,6 @@
 require 'streamio-ffmpeg'
 
-module YoutubeToWebm
+module VodTranscoder
   class Processor
 
     attr_reader :video, :output_file_path

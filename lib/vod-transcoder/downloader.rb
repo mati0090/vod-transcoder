@@ -1,7 +1,7 @@
 require 'viddl-rb'
 require 'typhoeus'
 
-module YoutubeToWebm
+module VodTranscoder
   class Downloader
     attr_reader :video_url
 
@@ -20,7 +20,7 @@ module YoutubeToWebm
         request = Typhoeus::Request.new(file_url, headers: headers, verbose: true, follow_location: true)
         request.on_headers do |response|
           if response.code != 200
-            raise YoutubeToWebm::VideoNotFoundException
+            raise VodTranscoder::VideoNotFoundException
           end
         end
         request.on_body do |chunk|
@@ -38,7 +38,7 @@ module YoutubeToWebm
         download_urls = ViddlRb.get_urls(video_url)
         download_urls.first
       rescue
-        raise YoutubeToWebm::VideoNotFoundException
+        raise VodTranscoder::VideoNotFoundException
       end
 
       def video_id

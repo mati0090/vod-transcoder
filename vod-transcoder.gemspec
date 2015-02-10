@@ -1,14 +1,14 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'youtube2webm/version'
+require 'vod-transcoder/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "youtube2webm"
-  spec.version       = YoutubeToWebm::VERSION
+  spec.name          = "vod-transcoder"
+  spec.version       = VodTranscoder::VERSION
   spec.authors       = ["Bury"]
   spec.email         = ["mati0090@gmail.com"]
-  spec.summary       = %q{Simple gem for creating webm clips from YouTube videos}
+  spec.summary       = %q{Simple gem for transcoding clips from VOD services like Youtube, Vimeo.}
   spec.homepage      = ""
   spec.license       = "MIT"
 

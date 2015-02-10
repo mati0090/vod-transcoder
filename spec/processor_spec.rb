@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe YoutubeToWebm::Processor do
+describe VodTranscoder::Processor do
   let(:file_path) {'file/path'}
   let(:output_file_path) {'output/file/path'}
   let(:start_timespan) {'00:00:15'}
@@ -8,7 +8,7 @@ describe YoutubeToWebm::Processor do
 
   let(:ffmpeg_processor) {double('FFMPEG')}
 
-  let(:processor) {YoutubeToWebm::Processor.new(file_path, output_file_path)}
+  let(:processor) {VodTranscoder::Processor.new(file_path, output_file_path)}
 
   before(:each) do
     allow(FFMPEG::Movie).to receive(:new).and_return(ffmpeg_processor)

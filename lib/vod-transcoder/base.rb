@@ -1,4 +1,4 @@
-module YoutubeToWebm
+module VodTranscoder
   class Base
 
     attr_accessor :video_url, :output_file_path, :start_timespan, :duration
@@ -23,11 +23,11 @@ module YoutubeToWebm
       end
 
       def downloader
-        @downloader ||= YoutubeToWebm::Downloader.new(video_url)
+        @downloader ||= VodTranscoder::Downloader.new(video_url)
       end
 
       def processor
-        @processor ||= YoutubeToWebm::Processor.new(video_file_path ,output_file_path)
+        @processor ||= VodTranscoder::Processor.new(video_file_path ,output_file_path)
       end
   end
 end
