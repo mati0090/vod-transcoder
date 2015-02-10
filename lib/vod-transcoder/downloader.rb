@@ -10,13 +10,12 @@ module VodTranscoder
     end
 
     def download!
-      save_file(url_from_movie)
+      save_file(movie_url)
     end
 
     private
 
       def save_file(file_url)
-        downloaded_file = File.open temp_file_path, 'wb'
         request = Typhoeus::Request.new(file_url, headers: headers, verbose: true, follow_location: true)
         request.on_headers do |response|
           if response.code != 200
@@ -24,31 +23,36 @@ module VodTranscoder
           end
         end
         request.on_body do |chunk|
-          downloaded_file.write(chunk)
+          temp_file.write(chunk)
         end
         request.on_complete do
-          downloaded_file.close
+          temp_file.close
         end
         request.run
 
-        downloaded_file
+        temp_file
       end
 
-      def url_from_movie
-        download_urls = ViddlRb.get_urls(video_url)
-        download_urls.first
-      rescue
+      def movie_data
+        @movie_data ||= ViddlRb.get_urls_names(video_url).first
+      rescue ViddlRb::DownloadError
         raise VodTranscoder::VideoNotFoundException
       end
 
-      def video_id
-        uri = URI(video_url)
-        params = CGI.parse(uri.query)
-        params['v'].first
+      def movie_url
+        movie_data[:url]
       end
 
-      def temp_file_path
-        "tmp/#{video_id}"
+      def movie_name
+        movie_data[:name]
+      end
+
+      def temp_file_name
+        movie_name
+      end
+
+      def temp_file
+        @temp_file ||= Tempfile.new(temp_file_name)
       end
 
       def headers
