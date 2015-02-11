@@ -5,25 +5,34 @@ describe VodTranscoder::Downloader do
   let(:youtube_clip_file_url){'http://clip_directly_ulr'}
 
   let(:youtube_clip_data_response) {{:url => youtube_clip_file_url, :name => "Movie name"}}
-  let(:y2w) {VodTranscoder::Downloader.new(youtube_clip_address)}
+  let(:downloader) {VodTranscoder::Downloader.new(youtube_clip_address)}
+
+  let(:temporary_file) {tempfile_mock}
 
   before(:each) do
-    allow(y2w).to receive(:save_file)
+    stub_file_download!
+
+    allow(downloader).to receive(:temp_file).and_return(temporary_file)
   end
 
   describe 'download!' do
 
-    it 'should initiate file downloading for existing url' do
+    it 'should call block on success' do
       allow(ViddlRb).to receive(:get_urls_names).and_return([youtube_clip_data_response])
-      y2w.download!
 
-      expect(y2w).to have_received(:save_file).with(youtube_clip_file_url)
+      expect{|block| downloader.download(&block)}.to yield_with_args(temporary_file)
+    end
+
+    it 'should close file when downloading is complete' do
+      downloader.download
+
+      expect(temporary_file).to have_received(:close)
     end
 
     it 'should trigger exception for non existing url' do
       allow(ViddlRb).to receive(:get_urls_names).and_raise(ViddlRb::DownloadError)
 
-      expect{y2w.download!}.to raise_error(VodTranscoder::VideoNotFoundException)
+      expect{downloader.download}.to raise_error(VodTranscoder::VideoNotFoundException)
     end
 
   end

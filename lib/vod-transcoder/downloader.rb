@@ -9,29 +9,27 @@ module VodTranscoder
       @video_url = video_url
     end
 
-    def download!
-      save_file(movie_url)
+    def download
+      request = Typhoeus::Request.new(movie_url, headers: headers, verbose: true, follow_location: true)
+      request.on_headers do |response|
+        if response.code != 200
+          raise VodTranscoder::VideoNotFoundException
+        end
+      end
+      request.on_body do |chunk|
+        temp_file.write(chunk)
+      end
+      request.on_complete do
+        temp_file.close
+
+        yield(temp_file) if block_given?
+      end
+      request.run
+
+      temp_file
     end
 
     private
-
-      def save_file(file_url)
-        request = Typhoeus::Request.new(file_url, headers: headers, verbose: true, follow_location: true)
-        request.on_headers do |response|
-          if response.code != 200
-            raise VodTranscoder::VideoNotFoundException
-          end
-        end
-        request.on_body do |chunk|
-          temp_file.write(chunk)
-        end
-        request.on_complete do
-          temp_file.close
-        end
-        request.run
-
-        temp_file
-      end
 
       def movie_data
         @movie_data ||= ViddlRb.get_urls_names(video_url).first
